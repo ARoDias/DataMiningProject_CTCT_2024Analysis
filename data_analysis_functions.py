@@ -1,5 +1,3 @@
-# data_analysis_functions.py
-
 # Data Manipulation Libraries
 import pandas as pd  # Data manipulation and analysis
 import numpy as np  # Numerical operations on large multi-dimensional arrays and matrices
@@ -13,16 +11,28 @@ from scipy.cluster.hierarchy import dendrogram, linkage  # Hierarchical clusteri
 import scipy.cluster.hierarchy as sch  # Additional hierarchical clustering methods from SciPy
 from scipy.stats import shapiro, chi2_contingency, mannwhitneyu  # Statistical tests
 
+# Word Document Manipulation
+from docx import Document  # For .docx file creation and manipulation
+import docx.shared  # For resizing images in the Word document
+
+# Date and Time Utilities
+from datetime import datetime  # For working with date and time
+
 # Machine Learning - Preprocessing and Model Evaluation
-from sklearn.preprocessing import StandardScaler  # Standardization of features
+from sklearn.preprocessing import StandardScaler, LabelEncoder  # Standardization of features and label encoding
 from sklearn.feature_selection import VarianceThreshold, mutual_info_classif  # Feature selection
-from sklearn.preprocessing import LabelEncoder  # Converts categorical labels into numerical
+from sklearn.model_selection import train_test_split  # For splitting the dataset into training and testing sets
+from sklearn.linear_model import LogisticRegression, LinearRegression  # Logistic and Linear regression models for analysis
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, r2_score  # Evaluation metrics for classification and regression
+from sklearn.ensemble import RandomForestClassifier  # Ensemble method for classification
 from sklearn.cluster import KMeans, AgglomerativeClustering  # Clustering algorithms
 from sklearn.decomposition import PCA  # Principal Component Analysis for dimensionality reduction
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score  # Clustering evaluation metrics
 
-# Data Serialization
+# Data Serialization and File Handling
 import os  # Provides a way of using operating system dependent functionality like reading or writing to the file system
+import shutil  # High-level file operations like copying and removal
+
 
 # Custom Functions for Document Generation and Display
 def print_to_doc(doc, *args):
@@ -1143,35 +1153,6 @@ def extensive_clustering_analysis(df, features, year):
     kmeans_clustering(X_pca, existing_features, year, n_clusters=2)
     plot_dendrogram(X, year)
     hierarchical_clustering(X_pca, existing_features, year, n_clusters=2)
-
-# Function to perform custom clustering analysis with a variable number of clusters
-def custom_clustering_analysis(df, features, year, n_clusters=2, save_path='Charts/Clustering'):
-    """Performs clustering analysis and generates related plots with a specified number of clusters."""
-    existing_features = [feature for feature in features if feature in df.columns]
-    if not existing_features:
-        print(f"No valid features for clustering in year {year}")
-        return
-
-    if len(existing_features) < 2:
-        print(f"Not enough features for clustering in year {year}")
-        return
-
-    scaler = StandardScaler()
-    X = scaler.fit_transform(df[existing_features])
-
-    if X.shape[0] < 2:
-        print(f"Not enough samples for clustering in year {year}")
-        return
-
-    pca = PCA(n_components=2)
-    X_pca = pca.fit_transform(X)
-    display_pca_components(pca, existing_features)
-
-    plot_elbow_method(X, year)
-    kmeans_clustering(X_pca, existing_features, year, n_clusters)
-    plot_dendrogram(X, year)
-    hierarchical_clustering(X_pca, existing_features, year, n_clusters)
-
 
 # Encoding categorical variables
 def encode_categorical_variables(df, columns):
